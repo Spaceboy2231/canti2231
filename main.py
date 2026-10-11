@@ -9,12 +9,10 @@ from utilsdf.functions import bot_on
 from utilsdf.db import Database
 from utilsdf.vars import PREFIXES
 
-# TODO: Replace with your credentials or use environment variables
-# Get your API credentials from https://my.telegram.org
-# Get your bot token from @BotFather on Telegram
-API_ID = getenv('TELEGRAM_API_ID', 'YOUR_API_ID')
-API_HASH = getenv('TELEGRAM_API_HASH', 'YOUR_API_HASH')
-BOT_TOKEN = getenv('TELEGRAM_BOT_TOKEN', 'YOUR_BOT_TOKEN')
+# Credenciales configuradas directamente con soporte para variables de entorno
+API_ID = int(getenv('TELEGRAM_API_ID', 31945747))
+API_HASH = getenv('TELEGRAM_API_HASH', '5096dd963d734eace76ba575201415af')
+BOT_TOKEN = getenv('TELEGRAM_BOT_TOKEN', '6832656731:AAHWwpC2NIXGlw_BSf_DluNfUP9_0p3pxPc')
 CHANNEL_LOGS = getenv('TELEGRAM_CHANNEL_LOGS', 'YOUR_CHANNEL_ID')
 
 app = Client(
@@ -71,15 +69,9 @@ async def user_ban(client: Client, m: Message):
                 if db.user_has_credits(user_id):
                     continue
                 await m.chat.ban_member(user_id)
-                info=db.get_info_user(user_id)
+                info = db.get_info_user(user_id)
                 await client.send_message(-1001494650944, f"<b>User eliminado: @{info['USERNAME']}</b>")
 
-        #         if not db.is_admin(m.from_user.id):
-        #             return await m.reply(
-        #                 """𝘽𝙤𝙩 𝙪𝙣𝙙𝙚𝙧 𝙈𝙖𝙣𝙩𝙚𝙣𝙞𝙚𝙣𝙘𝙚 ⚠️
-        # 𝙍𝙚𝙖𝙨𝙤𝙣 -» <code>Mantenimiento by @Fucker_504</code>
-        #        """
-        #             )
         user_id = m.from_user.id
         username = m.from_user.username
         db.remove_expireds_users()
