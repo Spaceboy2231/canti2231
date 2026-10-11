@@ -1,4 +1,7 @@
 import logging
+import os
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from os import getenv
 from huepy import bad
 from pyromod import Client
@@ -9,7 +12,25 @@ from utilsdf.functions import bot_on
 from utilsdf.db import Database
 from utilsdf.vars import PREFIXES
 
-# Credenciales configuradas directamente con soporte para variables de entorno
+# --- SERVIDOR HTTP DUMMY PARA RENDER ---
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is alive!")
+
+    def log_message(self, format, *args):
+        pass  # Silencia los logs de peticiones HTTP
+
+def run_web_server():
+    port = int(os.environ.get("PORT", 8080))
+    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
+    server.serve_forever()
+
+# Inicia el servidor web en segundo plano
+threading.Thread(target=run_web_server, daemon=True).start()
+# ---------------------------------------
+
 API_ID = int(getenv('TELEGRAM_API_ID', 31945747))
 API_HASH = getenv('TELEGRAM_API_HASH', '5096dd963d734eace76ba575201415af')
 BOT_TOKEN = getenv('TELEGRAM_BOT_TOKEN', '6832656731:AAHWwpC2NIXGlw_BSf_DluNfUP9_0p3pxPc')
